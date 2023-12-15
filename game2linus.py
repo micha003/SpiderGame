@@ -1,8 +1,14 @@
 from gturtle import * 
 from random import randint
+import time as t
 
 CELLSIZE = 30
 greyBlocks = randint(7, 25)
+blockCount = 0
+spiderSteps = 0
+
+def getPoints(tokens):
+    return 110 - (tokens * 10)
 
 
 # Zeichnet das Grundgitter: 
@@ -40,15 +46,32 @@ def drawGrid():
         fill()
             
     showTurtle()
+    
+#def path():
+#    forward(CELLSIZE)
+#    right(180)
+#    forward(CELLSIZE)
+#    penUp()
+#    right(180)
+#    for _ in range(setPenColor("yellow"):
+#    setPenWidth(CELLSIZE)
+#    pd()):
+#        forward(CELLSIZE)
+#    penDown()
 
-def doStep():    
+def doStep():
+    global spiderSteps    
     hideTurtle()    
     # Einen Schritt nach vorne machen.    
     forward(CELLSIZE)
+    spiderSteps += 1
+#    path()
     #gelbes Strich ziehen
-    setPenColor("yellow")
-    setPenWidth(CELLSIZE)
-    pd()    
+#    setPenColor("yellow")
+#    setPenWidth(CELLSIZE)
+#    pd()
+    
+       
     # Falls die Turtle auf einem schwarzen Feld landet,  
     # setzen wir sie wieder zurück und drehen sie dafür.    
     if getPixelColorStr() == "black":        
@@ -61,7 +84,13 @@ def doStep():
         back(CELLSIZE)
         right(90)
     elif getPixelColorStr() == 'red':
+        end = t.time()
+        diff = end - start
         print("DU HAST GEWONNEN!")
+        print("genutzte Blöcke: " + str(blockCount))
+        print("gelaufene Felder:" + str(spiderSteps))
+        print("Zeit: " + str(round(diff, 2)) + "s")
+        print("Punkte:" + str(getPoints(blockCount)))
         putSleep()
            
     showTurtle() 
@@ -76,7 +105,7 @@ definedTarget = False
 # An dieser Stelle könntest du ein Feld als Ziel färben.
 @onMouseHit
 def defineTarget(x, y):
-    global definedTarget
+    global definedTarget, blockCount
     turtle_x = getX() 
     turtle_y = getY() 
     
@@ -85,10 +114,12 @@ def defineTarget(x, y):
         setPos(x, y)    
         if getPixelColorStr() == "white":       
             setFillColor("black")      
-            fill(x, y)   
+            fill(x, y)
+            blockCount += 1
         elif getPixelColorStr() == "black":
             setFillColor("white")
             fill(x, y)
+            blockCount += 1
         
         # Die Turtle wieder dahin zurücksetzen, wo sie vorher war.    
         setPos(turtle_x, turtle_y)    
@@ -110,7 +141,9 @@ def defineTarget(x, y):
 # Die Turtle auf ein Anfangsfeld setzen: 
 setPos(-400 + 5 * CELLSIZE // 2, -300 + 5 * CELLSIZE // 2)
 penUp() 
-lim = 1000 
-for k in range(lim):  
+lim = 1000
+start = t.time() 
+right(90)  
+for k in range(lim):
     doStep()  
     delay(500)
